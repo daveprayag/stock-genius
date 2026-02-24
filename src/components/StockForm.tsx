@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { motion, AnimatePresence } from "framer-motion";
 import { Search, AlertCircle, Clock } from "lucide-react";
 import { AnalysisResults } from "@/components/AnalysisResults";
 import { StatusTimeline } from "@/components/StatusTimeline";
@@ -15,8 +14,13 @@ type StatusStep = {
     timestamp?: Date;
 };
 
-export function StockForm() {
-    const [symbol, setSymbol] = useState("");
+interface StockFormProps {
+    initialSymbol?: string;
+    onSymbolConsumed?: () => void;
+}
+
+export function StockForm({ initialSymbol = "", onSymbolConsumed }: StockFormProps) {
+    const [symbol, setSymbol] = useState(initialSymbol);
     const [loading, setLoading] = useState(false);
     const [analysis, setAnalysis] = useState<null | {
         result: any;
@@ -36,6 +40,15 @@ export function StockForm() {
     ]);
 
     const timelineRef = useRef<HTMLDivElement>(null);
+
+    // When a symbol is pre-filled from the Momentum Screener, sync it in
+    useEffect(() => {
+        if (initialSymbol) {
+            setSymbol(initialSymbol);
+            onSymbolConsumed?.();
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initialSymbol]);
 
     const updateStepStatus = (stepId: string, status: StatusStep["status"]) => {
         setStatusSteps((prev) =>
@@ -81,7 +94,7 @@ export function StockForm() {
 
         try {
             setLoading(true);
-            scrollToTimeline(); // Auto-scroll to timeline
+            scrollToTimeline();
 
             // Step 1: Validate
             updateStepStatus("validate", "active");
@@ -123,37 +136,11 @@ export function StockForm() {
 
             console.log("LLM Response:", promptResponse.data.result);
 
-            try {
-                const parsedResult = JSON.parse(promptResponse.data.result);
-                setAnalysis({
-                    result: parsedResult,
-                    tokensUsed: promptResponse.data.tokensUsed,
-                });
-            } catch (error) {
-                try {
-                    const sanitized = promptResponse.data.result
-                        .replace(/```json|```/g, "")
-                        .trim();
-
-                    const parsedResult = JSON.parse(sanitized);
-                    setAnalysis({
-                        result: parsedResult,
-                        tokensUsed: promptResponse.data.tokensUsed,
-                    });
-                    console.log(
-                        "Parsed LLM response successfully:",
-                        parsedResult
-                    );
-                } catch (finalError) {
-                    console.error(
-                        "Failed to parse LLM response as JSON:",
-                        finalError
-                    );
-                    setError("Received invalid response. Please try again.");
-                    updateStepStatus("analyze", "error");
-                    return;
-                }
-            }
+            const parsedResult = JSON.parse(promptResponse.data.result);
+            setAnalysis({
+                result: parsedResult,
+                tokensUsed: promptResponse.data.tokensUsed,
+            });
 
             updateStepStatus("analyze", "completed");
 
@@ -171,7 +158,6 @@ export function StockForm() {
                 setError("An unexpected error occurred.");
             }
 
-            // Mark current active step as error
             const activeStep = statusSteps.find(
                 (step) => step.status === "active"
             );
@@ -186,12 +172,7 @@ export function StockForm() {
     return (
         <div className="w-full space-y-8">
             {/* Stock Input Card */}
-            <motion.div
-                className="bg-neutral-900 rounded-2xl border border-neutral-800 p-8"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.6 }}
-            >
+            <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-8">
                 <div className="text-center mb-8">
                     <h2 className="text-2xl font-bold text-zinc-100 mb-2">
                         Stock Analysis
@@ -223,22 +204,16 @@ export function StockForm() {
                             </div>
                         </div>
 
-                        {/* <div className="text-sm text-zinc-400">
-                            Supported symbols: TCS, RELIANCE, INFY, HDFCBANK,
-                            ICICIBANK, SBIN, ITC, HINDUNILVR, LT, BAJFINANCE
-                        </div> */}
-
-                        <motion.button
+                        <button
                             type="submit"
                             disabled={loading || !symbol.trim()}
                             className="w-full bg-zinc-100 hover:bg-zinc-200 cursor-pointer text-zinc-800 font-semibold py-4 px-6 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-3"
-                            whileTap={{ scale: loading ? 1 : 0.98 }}
                         >
                             <Search className="w-5 h-5" />
                             <span>
                                 {loading ? "Analyzing..." : "Analyze Stock"}
                             </span>
-                        </motion.button>
+                        </button>
 
                         {loading && (
                             <div className="flex items-center justify-center gap-2 antialiased text-zinc-300 text-sm">
@@ -255,61 +230,34 @@ export function StockForm() {
                         AI-powered analysis for Indian markets
                     </div>
                 </div>
-            </motion.div>
+            </div>
 
             {/* Status Timeline */}
             <div ref={timelineRef}>
-                <AnimatePresence>
-                    {loading && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.5 }}
-                        >
-                            <StatusTimeline steps={statusSteps} />
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                {loading && <StatusTimeline steps={statusSteps} />}
             </div>
 
             {/* Error Message */}
-            <AnimatePresence>
-                {error && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                        className="bg-red-900/20 border border-red-800 rounded-2xl p-6"
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-red-900/40 rounded-full">
-                                <AlertCircle className="w-5 h-5 text-red-400" />
-                            </div>
-                            <div>
-                                <p className="text-red-300 font-semibold">
-                                    Analysis Error
-                                </p>
-                                <p className="text-red-400 text-sm">{error}</p>
-                            </div>
+            {error && (
+                <div className="bg-red-900/20 border border-red-800 rounded-2xl p-6">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-red-900/40 rounded-full">
+                            <AlertCircle className="w-5 h-5 text-red-400" />
                         </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                        <div>
+                            <p className="text-red-300 font-semibold">
+                                Analysis Error
+                            </p>
+                            <p className="text-red-400 text-sm">{error}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Analysis Results */}
-            <AnimatePresence>
-                {analysis && !loading && !error && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -30 }}
-                        transition={{ duration: 0.7, ease: "easeOut" }}
-                    >
-                        <AnalysisResults analysis={analysis} />
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {analysis && !loading && !error && (
+                <AnalysisResults analysis={analysis} />
+            )}
         </div>
     );
 }

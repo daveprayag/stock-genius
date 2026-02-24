@@ -1,52 +1,48 @@
 "use client";
 
+import { useState } from "react";
 import { StockForm } from "@/components/StockForm";
-import { motion } from "framer-motion";
-import { TrendingUp, Brain, Zap, Shield } from "lucide-react";
+import { MomentumScreener } from "@/components/MomentumScreener";
+import { ValueScreener } from "@/components/ValueScreener";
+import { TrendingUp, Brain, Zap, Shield, Gem } from "lucide-react";
+
+type Tab = "analyzer" | "momentum" | "value";
 
 export default function Home() {
+    const [activeTab, setActiveTab] = useState<Tab>("analyzer");
+    const [prefilledSymbol, setPrefilledSymbol] = useState<string>("");
+
+    const handleAnalyzeFromScreener = (symbol: string) => {
+        setPrefilledSymbol(symbol);
+        setActiveTab("analyzer");
+        setTimeout(() => {
+            document
+                .getElementById("stock-form")
+                ?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 150);
+    };
+
     return (
         <div className="min-h-screen bg-neutral-950 relative overflow-hidden">
-            {/* Background Grid */}
-            <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/3 via-transparent to-green-500/2"></div>
-
-            {/* Radial gradient overlay for depth */}
-            <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-neutral-950/20"></div>
+            {/* Background */}
+            <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/3 via-transparent to-green-500/2" />
 
             {/* Fixed Header */}
-            <motion.header
-                initial={{ y: -20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.6 }}
-                className="fixed top-0 left-0 right-0 z-50 border-b border-neutral-800 bg-neutral-950/95 backdrop-blur-xl"
-            >
+            <header className="fixed top-0 left-0 right-0 z-50 border-b border-neutral-800 bg-neutral-950/95 backdrop-blur-xl">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-                    <motion.div
-                        className="flex items-center gap-3"
-                        whileHover={{ scale: 1.02 }}
-                        transition={{
-                            type: "spring",
-                            stiffness: 400,
-                            damping: 10,
-                        }}
-                    >
+                    {/* Logo */}
+                    <div className="flex items-center gap-3">
                         <div className="relative">
                             <div className="w-10 h-10 bg-zinc-100 rounded-xl flex items-center justify-center shadow-lg">
                                 <TrendingUp className="w-5 h-5 text-zinc-900" />
                             </div>
-                            <motion.div
-                                className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full"
-                                animate={{ scale: [1, 1.2, 1] }}
-                                transition={{ duration: 2, repeat: Infinity }}
-                            />
+                            <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full" />
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold text-zinc-100">
-                                StockGenius
-                            </h1>
+                            <h1 className="text-xl font-bold text-zinc-100">StockGenius</h1>
                             <div className="flex items-center gap-2 mt-0.5">
-                                <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full font-medium shadow-sm">
+                                <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full font-medium">
                                     AI Powered
                                 </span>
                                 <span className="text-xs text-zinc-400 font-medium">
@@ -54,182 +50,167 @@ export default function Home() {
                                 </span>
                             </div>
                         </div>
-                    </motion.div>
-                    <motion.div
-                        className="hidden md:flex items-center gap-2 text-zinc-400"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3 }}
-                    >
-                        <span className="text-sm font-medium">
-                            Live Analysis
-                        </span>
-                        <motion.div
-                            className="w-2 h-2 bg-green-500 rounded-full shadow-sm"
-                            animate={{ scale: [1, 1.3, 1] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                        />
-                    </motion.div>
-                </div>
-            </motion.header>
+                    </div>
 
-            {/* Main Content with top padding for fixed header */}
+                    {/* Tab navigation */}
+                    <div className="flex items-center bg-neutral-900 border border-neutral-800 rounded-xl p-1 gap-1">
+                        <button
+                            onClick={() => setActiveTab("analyzer")}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                                activeTab === "analyzer"
+                                    ? "bg-zinc-100 text-zinc-900 shadow-sm"
+                                    : "text-zinc-400 hover:text-zinc-200"
+                            }`}
+                        >
+                            <Brain className="w-4 h-4" />
+                            <span className="hidden sm:inline">Analyzer</span>
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("momentum")}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                                activeTab === "momentum"
+                                    ? "bg-zinc-100 text-zinc-900 shadow-sm"
+                                    : "text-zinc-400 hover:text-zinc-200"
+                            }`}
+                        >
+                            <Zap className="w-4 h-4" />
+                            <span className="hidden sm:inline">Momentum</span>
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("value")}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                                activeTab === "value"
+                                    ? "bg-zinc-100 text-zinc-900 shadow-sm"
+                                    : "text-zinc-400 hover:text-zinc-200"
+                            }`}
+                        >
+                            <Gem className="w-4 h-4" />
+                            <span className="hidden sm:inline">Value</span>
+                        </button>
+                    </div>
+
+                    {/* Live indicator */}
+                    <div className="hidden md:flex items-center gap-2 text-zinc-400">
+                        <span className="text-sm font-medium">Live Analysis</span>
+                        <div className="w-2 h-2 bg-green-500 rounded-full" />
+                    </div>
+                </div>
+            </header>
+
+            {/* Main */}
             <main className="pt-20 flex-1 relative z-10">
                 <div className="max-w-7xl mx-auto px-6 py-12">
-                    {/* Hero Section */}
-                    <motion.div
-                        className="text-center mb-16"
-                        initial={{ y: 30, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                    >
-                        <motion.h1
-                            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
-                            initial={{ y: 20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ duration: 0.8, delay: 0.4 }}
-                        >
-                            <span className="text-zinc-100">AI Stock </span>
-                            <span className="text-blue-400">Analyzer</span>
-                        </motion.h1>
-                        <motion.p
-                            className="text-xl text-zinc-300 mb-12 max-w-4xl mx-auto leading-relaxed"
-                            initial={{ y: 20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ duration: 0.8, delay: 0.6 }}
-                        >
-                            Professional-grade AI analysis for Indian stock
-                            markets. Get detailed insights, trend analysis, and
-                            trading recommendations powered by advanced
-                            algorithms.
-                        </motion.p>
-
-                        {/* Feature Pills */}
-                        <motion.div
-                            className="flex flex-wrap justify-center gap-4 mb-12"
-                            initial={{ y: 20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ duration: 0.8, delay: 0.8 }}
-                        >
-                            {[
-                                {
-                                    icon: Brain,
-                                    text: "AI-Powered Analysis",
-                                },
-                                {
-                                    icon: Zap,
-                                    text: "Real-time Insights",
-                                },
-                                {
-                                    icon: Shield,
-                                    text: "Risk Assessment",
-                                },
-                            ].map((feature, index) => (
-                                <motion.div
-                                    key={feature.text}
-                                    className="flex items-center gap-2 px-4 py-2 bg-neutral-800 border border-neutral-700 text-zinc-200 rounded-full text-sm font-medium shadow-lg"
-                                    whileHover={{ scale: 1.05, y: -2 }}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 1 + index * 0.1 }}
-                                >
-                                    <feature.icon className="w-4 h-4" />
-                                    {feature.text}
-                                </motion.div>
-                            ))}
-                        </motion.div>
-                    </motion.div>
-
-                    {/* How It Works Section */}
-                    <motion.div
-                        className="mb-20"
-                        initial={{ y: 40, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ duration: 0.8, delay: 1.1 }}
-                    >
-                        <div className="text-center mb-12">
-                            <h2 className="text-3xl md:text-4xl font-bold text-zinc-100 mb-4">
-                                How It Works
-                            </h2>
-                            <p className="text-zinc-300 text-lg max-w-2xl mx-auto">
-                                Get professional stock analysis in three simple
-                                steps
-                            </p>
+                    {activeTab === "value" ? (
+                        <div>
+                            <div className="mb-8 text-center">
+                                <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+                                    <span className="text-zinc-100">Value </span>
+                                    <span className="text-emerald-400">Screener</span>
+                                </h1>
+                                <p className="text-zinc-300 text-lg max-w-2xl mx-auto">
+                                    NSE stocks ranked by a composite value score — low valuation,
+                                    strong fundamentals, and analyst upside.
+                                </p>
+                                <div className="flex flex-wrap justify-center gap-3 mt-6">
+                                    {[
+                                        "Low P/E & P/B",
+                                        "High ROE",
+                                        "Low Debt",
+                                        "FCF Positive",
+                                        "Analyst Upside",
+                                    ].map((tag) => (
+                                        <span
+                                            key={tag}
+                                            className="px-3 py-1.5 bg-neutral-800 border border-neutral-700 text-zinc-300 rounded-full text-sm"
+                                        >
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                            <ValueScreener onAnalyze={handleAnalyzeFromScreener} />
                         </div>
+                    ) : activeTab === "analyzer" ? (
+                        <div>
+                            {/* Hero */}
+                            <div className="text-center mb-16">
+                                <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                                    <span className="text-zinc-100">AI Stock </span>
+                                    <span className="text-blue-400">Analyzer</span>
+                                </h1>
+                                <p className="text-xl text-zinc-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+                                    Professional-grade AI analysis for Indian stock markets.
+                                    Get detailed insights, trend analysis, and trading
+                                    recommendations.
+                                </p>
 
-                        <div className="grid md:grid-cols-3 gap-8">
-                            {[
-                                {
-                                    step: "01",
-                                    title: "Enter Stock Symbol",
-                                    description:
-                                        "Simply type any Indian stock symbol (NSE/BSE) to begin your analysis",
-                                    icon: "📊",
-                                },
-                                {
-                                    step: "02",
-                                    title: "AI Analysis",
-                                    description:
-                                        "Our advanced AI processes real-time data, technicals, and market sentiment",
-                                    icon: "🤖",
-                                },
-                                {
-                                    step: "03",
-                                    title: "Get Insights",
-                                    description:
-                                        "Receive detailed analysis with trading recommendations and risk assessment",
-                                    icon: "📈",
-                                },
-                            ].map((item, index) => (
-                                <motion.div
-                                    key={item.step}
-                                    className="bg-neutral-900/50 border border-neutral-800 rounded-2xl p-6 text-center backdrop-blur-sm"
-                                    initial={{ y: 30, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ delay: 1.2 + index * 0.1 }}
-                                    whileHover={{ scale: 1.02, y: -4 }}
-                                >
-                                    <div className="text-3xl mb-4">
-                                        {item.icon}
-                                    </div>
-                                    <div className="text-blue-400 font-bold text-sm mb-2">
-                                        STEP {item.step}
-                                    </div>
-                                    <h3 className="text-zinc-100 font-semibold text-lg mb-3">
-                                        {item.title}
-                                    </h3>
-                                    <p className="text-zinc-400 text-sm leading-relaxed">
-                                        {item.description}
-                                    </p>
-                                </motion.div>
-                            ))}
+                                <div className="flex flex-wrap justify-center gap-4 mb-12">
+                                    {[
+                                        { icon: Brain, text: "AI-Powered Analysis" },
+                                        { icon: Zap, text: "Real-time Insights" },
+                                        { icon: Shield, text: "Risk Assessment" },
+                                    ].map((feature) => (
+                                        <div
+                                            key={feature.text}
+                                            className="flex items-center gap-2 px-4 py-2 bg-neutral-800 border border-neutral-700 text-zinc-200 rounded-full text-sm font-medium"
+                                        >
+                                            <feature.icon className="w-4 h-4" />
+                                            {feature.text}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Stock Form */}
+                            <div id="stock-form" className="mb-16">
+                                <StockForm
+                                    initialSymbol={prefilledSymbol}
+                                    onSymbolConsumed={() => setPrefilledSymbol("")}
+                                />
+                            </div>
                         </div>
-                    </motion.div>
+                    ) : (
+                        <div>
+                            {/* Momentum tab header */}
+                            <div className="mb-8 text-center">
+                                <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+                                    <span className="text-zinc-100">Momentum </span>
+                                    <span className="text-yellow-400">Screener</span>
+                                </h1>
+                                <p className="text-zinc-300 text-lg max-w-2xl mx-auto">
+                                    NSE stocks filtered by strict momentum criteria and ranked
+                                    by composite score — built for 3–6 month swing trades.
+                                </p>
+                                <div className="flex flex-wrap justify-center gap-3 mt-6">
+                                    {[
+                                        "Price > EMA 50",
+                                        "3M Return > 10%",
+                                        "Within 10% of 1M High",
+                                        "Volume Confirmation",
+                                    ].map((tag) => (
+                                        <span
+                                            key={tag}
+                                            className="px-3 py-1.5 bg-neutral-800 border border-neutral-700 text-zinc-300 rounded-full text-sm"
+                                        >
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
 
-                    {/* Stock Form */}
-                    <motion.div
-                        className="mb-16"
-                        initial={{ y: 40, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ duration: 0.8, delay: 1.5 }}
-                    >
-                        <StockForm />
-                    </motion.div>
+                            <MomentumScreener onAnalyze={handleAnalyzeFromScreener} />
+                        </div>
+                    )}
                 </div>
             </main>
 
             {/* Footer */}
-            <motion.footer
-                className="border-t border-neutral-800 bg-neutral-950 py-8 relative z-10"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 1.8 }}
-            >
+            <footer className="border-t border-neutral-800 bg-neutral-950 py-8 relative z-10">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         <p className="text-zinc-300 text-sm">
-                            &copy; {new Date().getFullYear()} StockGenius.
-                            Professional stock analysis platform.
+                            &copy; {new Date().getFullYear()} StockGenius. Professional stock
+                            analysis platform.
                         </p>
                         <div className="flex items-center gap-4 text-xs text-zinc-400">
                             <span>Advanced AI</span>
@@ -241,18 +222,13 @@ export default function Home() {
                     </div>
                     <div className="mt-4 pt-4 border-t border-neutral-800">
                         <p className="text-xs text-zinc-400 text-center">
-                            <strong>Disclaimer:</strong> This tool provides
-                            educational insights only and should not be
-                            considered as investment advice. Real-time quotes
-                            may be delayed by 5-10 minutes. Historical data
-                            accuracy is subject to exchange corrections and
-                            corporate actions. Always consult with a qualified
-                            financial advisor before making investment
-                            decisions.
+                            <strong>Disclaimer:</strong> Educational insights only — not
+                            investment advice. Quotes may be delayed 5–10 minutes. Always
+                            consult a qualified financial advisor before investing.
                         </p>
                     </div>
                 </div>
-            </motion.footer>
+            </footer>
         </div>
     );
 }

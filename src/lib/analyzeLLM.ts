@@ -7,7 +7,8 @@ export async function analyzeLLM(prompt: string) {
     if (!GEMINI_API_KEY) {
         throw new Error("GEMINI_API_KEY is not set");
     }
-    const genAI = new GoogleGenAI({});
+
+    const genAI = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
     const response = await genAI.models.generateContent({
         model: "gemini-2.5-flash",
         contents: prompt,
@@ -15,6 +16,7 @@ export async function analyzeLLM(prompt: string) {
             thinkingConfig: {
                 thinkingBudget: 0,
             },
+            responseMimeType: "application/json",
         },
     });
 

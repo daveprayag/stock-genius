@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
     TrendingUp,
     TrendingDown,
@@ -35,6 +34,16 @@ interface AnalysisData {
             breakout: boolean;
             supportLevel: string;
             resistanceLevel: string;
+        };
+        technicalSignalsSummary?: {
+            bullishSignals: string[];
+            bearishSignals: string[];
+            signalAlignment:
+                | "Strongly Bullish"
+                | "Bullish"
+                | "Mixed"
+                | "Bearish"
+                | "Strongly Bearish";
         };
         tradingRecommendation?: {
             swingTradeRecommendation: "Buy" | "Hold" | "Sell";
@@ -81,32 +90,17 @@ interface AnalysisResultsProps {
     analysis: AnalysisData;
 }
 
-const container = {
-    hidden: { opacity: 0 },
-    show: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.1,
-        },
-    },
-};
-
-const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 },
-};
-
 export function AnalysisResults({ analysis }: AnalysisResultsProps) {
     const {
         stockInfo,
         technicalAnalysis,
+        technicalSignalsSummary,
         tradingRecommendation,
         predictions,
         riskAssessment,
         reasoning,
     } = analysis.result;
 
-    // Helper functions for styling
     const getTrendIcon = (trend?: string) => {
         switch (trend) {
             case "Upward":
@@ -162,19 +156,28 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
         }
     };
 
+    const getAlignmentColor = (alignment?: string) => {
+        switch (alignment) {
+            case "Strongly Bullish":
+                return "text-green-400 bg-green-500/10 border-green-500/30";
+            case "Bullish":
+                return "text-green-500 bg-green-500/10 border-green-500/20";
+            case "Mixed":
+                return "text-yellow-400 bg-yellow-500/10 border-yellow-500/20";
+            case "Bearish":
+                return "text-red-500 bg-red-500/10 border-red-500/20";
+            case "Strongly Bearish":
+                return "text-red-400 bg-red-500/10 border-red-500/30";
+            default:
+                return "text-zinc-400 bg-zinc-500/10 border-zinc-500/20";
+        }
+    };
+
     return (
-        <motion.div
-            variants={container}
-            initial="hidden"
-            animate="show"
-            className="space-y-6"
-        >
+        <div className="space-y-6">
             {/* Stock Header Card */}
             {stockInfo && (
-                <motion.div
-                    variants={item}
-                    className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6"
-                >
+                <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6">
                     <div className="flex items-start justify-between mb-6">
                         <div>
                             <div className="flex items-center gap-3 mb-2">
@@ -234,17 +237,13 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                             </p>
                         </div>
                     </div>
-                </motion.div>
+                </div>
             )}
 
-            {/* Quick Summary and Trading Recommendation */}
+            {/* Trading Recommendation + Technical Analysis */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Trading Recommendation */}
                 {tradingRecommendation && (
-                    <motion.div
-                        variants={item}
-                        className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6"
-                    >
+                    <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6">
                         <div className="flex items-center gap-2 mb-6">
                             <Target className="w-5 h-5 text-blue-500" />
                             <h3 className="text-xl font-bold text-zinc-100">
@@ -311,7 +310,6 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                             </div>
                         </div>
 
-                        {/* Price Targets */}
                         {tradingRecommendation.targets && (
                             <div className="mt-6 pt-6 border-t border-neutral-800">
                                 <h4 className="text-sm font-semibold text-zinc-200 mb-3">
@@ -354,15 +352,11 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                                 </div>
                             </div>
                         )}
-                    </motion.div>
+                    </div>
                 )}
 
-                {/* Technical Analysis */}
                 {technicalAnalysis && (
-                    <motion.div
-                        variants={item}
-                        className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6"
-                    >
+                    <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6">
                         <div className="flex items-center gap-2 mb-6">
                             <BarChart3 className="w-5 h-5 text-blue-500" />
                             <h3 className="text-xl font-bold text-zinc-100">
@@ -435,16 +429,84 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                                 </div>
                             )}
                         </div>
-                    </motion.div>
+                    </div>
                 )}
             </div>
 
+            {/* Technical Signals Summary */}
+            {technicalSignalsSummary && (
+                <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-2">
+                            <BarChart3 className="w-5 h-5 text-blue-500" />
+                            <h3 className="text-xl font-bold text-zinc-100">
+                                Signal Alignment
+                            </h3>
+                        </div>
+                        {technicalSignalsSummary.signalAlignment && (
+                            <span
+                                className={`px-3 py-1 rounded-full text-sm font-semibold border ${getAlignmentColor(technicalSignalsSummary.signalAlignment)}`}
+                            >
+                                {technicalSignalsSummary.signalAlignment}
+                            </span>
+                        )}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {technicalSignalsSummary.bullishSignals?.length > 0 && (
+                            <div>
+                                <h4 className="text-sm font-semibold text-green-400 mb-3 flex items-center gap-1">
+                                    <TrendingUp className="w-3.5 h-3.5" />
+                                    Bullish Signals
+                                </h4>
+                                <div className="space-y-2">
+                                    {technicalSignalsSummary.bullishSignals.map(
+                                        (signal, i) => (
+                                            <div
+                                                key={i}
+                                                className="flex items-start gap-2"
+                                            >
+                                                <div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-2 flex-shrink-0" />
+                                                <span className="text-zinc-300 text-sm">
+                                                    {signal}
+                                                </span>
+                                            </div>
+                                        )
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {technicalSignalsSummary.bearishSignals?.length > 0 && (
+                            <div>
+                                <h4 className="text-sm font-semibold text-red-400 mb-3 flex items-center gap-1">
+                                    <TrendingDown className="w-3.5 h-3.5" />
+                                    Bearish Signals
+                                </h4>
+                                <div className="space-y-2">
+                                    {technicalSignalsSummary.bearishSignals.map(
+                                        (signal, i) => (
+                                            <div
+                                                key={i}
+                                                className="flex items-start gap-2"
+                                            >
+                                                <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 flex-shrink-0" />
+                                                <span className="text-zinc-300 text-sm">
+                                                    {signal}
+                                                </span>
+                                            </div>
+                                        )
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
             {/* Predictions */}
             {predictions && (
-                <motion.div
-                    variants={item}
-                    className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6"
-                >
+                <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6">
                     <div className="flex items-center gap-2 mb-6">
                         <Calendar className="w-5 h-5 text-blue-500" />
                         <h3 className="text-xl font-bold text-zinc-100">
@@ -453,7 +515,6 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {/* Upside Potential */}
                         {predictions.upsidePotential && (
                             <div>
                                 <h4 className="text-lg font-semibold text-green-400 mb-4 flex items-center gap-2">
@@ -513,7 +574,6 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                             </div>
                         )}
 
-                        {/* Downside Risk */}
                         {predictions.downsideRisk && (
                             <div>
                                 <h4 className="text-lg font-semibold text-red-400 mb-4 flex items-center gap-2">
@@ -562,7 +622,6 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                         )}
                     </div>
 
-                    {/* Price Targets */}
                     {predictions.priceTargets && (
                         <div className="mt-8 pt-6 border-t border-neutral-800">
                             <h4 className="text-lg font-semibold text-zinc-200 mb-4 flex items-center gap-2">
@@ -597,15 +656,12 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                             </div>
                         </div>
                     )}
-                </motion.div>
+                </div>
             )}
 
             {/* Risk Assessment */}
             {riskAssessment && (
-                <motion.div
-                    variants={item}
-                    className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6"
-                >
+                <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6">
                     <div className="flex items-center gap-2 mb-6">
                         <Shield className="w-5 h-5 text-blue-500" />
                         <h3 className="text-xl font-bold text-zinc-100">
@@ -647,7 +703,6 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                             </div>
                         </div>
 
-                        {/* Key Risk Factors */}
                         {riskAssessment.keyRiskFactors &&
                             riskAssessment.keyRiskFactors.length > 0 && (
                                 <div>
@@ -672,40 +727,32 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                                 </div>
                             )}
                     </div>
-                </motion.div>
+                </div>
             )}
 
             {/* AI Reasoning */}
             {reasoning && (
-                <motion.div
-                    variants={item}
-                    className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6"
-                >
+                <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6">
                     <div className="flex items-center gap-2 mb-4">
                         <Brain className="w-5 h-5 text-blue-500" />
                         <h3 className="text-xl font-bold text-zinc-100">
-                            AI Analysis & Reasoning
+                            AI Reasoning
                         </h3>
                     </div>
-                    <div className="prose prose-invert max-w-none">
-                        <p className="text-zinc-200 leading-relaxed whitespace-pre-wrap">
-                            {reasoning}
-                        </p>
-                    </div>
-                </motion.div>
+                    <p className="text-zinc-200 leading-relaxed whitespace-pre-wrap">
+                        {reasoning}
+                    </p>
+                </div>
             )}
 
             {/* Footer */}
             {analysis.tokensUsed !== undefined && (
-                <motion.div
-                    variants={item}
-                    className="text-center py-4 text-zinc-400 text-sm"
-                >
+                <div className="text-center py-4 text-zinc-400 text-sm">
                     Analysis powered by Advanced AI • Tokens used:{" "}
                     {analysis.tokensUsed} • Always conduct your own research
                     before investing
-                </motion.div>
+                </div>
             )}
-        </motion.div>
+        </div>
     );
 }
