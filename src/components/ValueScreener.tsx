@@ -70,12 +70,6 @@ function fmtPct(n: number | null): string {
     return `${n >= 0 ? "+" : ""}${n.toFixed(1)}%`;
 }
 
-function fmtCap(n: number | null): string {
-    if (n == null) return "—";
-    if (n >= 1e12) return `₹${(n / 1e12).toFixed(2)}T`;
-    if (n >= 1e9) return `₹${(n / 1e9).toFixed(1)}B`;
-    return `₹${(n / 1e6).toFixed(0)}M`;
-}
 
 function scoreBg(label: ValueStock["valueLabel"]): string {
     if (label === "Deep Value") return "bg-emerald-500/15 border-emerald-500/40 text-emerald-400";
