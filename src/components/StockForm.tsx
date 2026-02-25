@@ -172,12 +172,12 @@ export function StockForm({ initialSymbol = "", onSymbolConsumed }: StockFormPro
     return (
         <div className="w-full space-y-8">
             {/* Stock Input Card */}
-            <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-8">
+            <div className="bg-white rounded-2xl border border-stone-200 p-8 shadow-sm">
                 <div className="text-center mb-8">
-                    <h2 className="text-2xl font-bold text-zinc-100 mb-2">
+                    <h2 className="text-2xl font-bold text-stone-800 mb-2">
                         Stock Analysis
                     </h2>
-                    <p className="text-zinc-300">
+                    <p className="text-stone-500">
                         Enter an Indian stock symbol for AI-powered analysis
                     </p>
                 </div>
@@ -185,12 +185,12 @@ export function StockForm({ initialSymbol = "", onSymbolConsumed }: StockFormPro
                 <form onSubmit={handleSubmit} className="max-w-lg mx-auto">
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-zinc-200 mb-2">
+                            <label className="block text-sm font-medium text-stone-700 mb-2">
                                 Stock Symbol{" "}
                                 <span className="text-red-500">*</span>
                             </label>
                             <div className="relative">
-                                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-zinc-400 w-5 h-5" />
+                                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-stone-400 w-5 h-5" />
                                 <input
                                     type="text"
                                     placeholder="e.g., TCS, RELIANCE, INFY"
@@ -198,7 +198,7 @@ export function StockForm({ initialSymbol = "", onSymbolConsumed }: StockFormPro
                                     onChange={(e) =>
                                         setSymbol(e.target.value.toUpperCase())
                                     }
-                                    className="w-full pl-12 pr-4 py-4 bg-neutral-800 border border-neutral-700 text-zinc-100 placeholder-zinc-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-100 focus:border-transparent transition-all duration-200"
+                                    className="w-full pl-12 pr-4 py-4 bg-stone-50 border border-stone-300 text-stone-800 placeholder-stone-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-transparent transition-all duration-200"
                                     disabled={loading}
                                 />
                             </div>
@@ -207,7 +207,7 @@ export function StockForm({ initialSymbol = "", onSymbolConsumed }: StockFormPro
                         <button
                             type="submit"
                             disabled={loading || !symbol.trim()}
-                            className="w-full bg-zinc-100 hover:bg-zinc-200 cursor-pointer text-zinc-800 font-semibold py-4 px-6 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-3"
+                            className="w-full bg-stone-800 hover:bg-stone-900 cursor-pointer text-white font-semibold py-4 px-6 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-3 shadow-md"
                         >
                             <Search className="w-5 h-5" />
                             <span>
@@ -216,7 +216,7 @@ export function StockForm({ initialSymbol = "", onSymbolConsumed }: StockFormPro
                         </button>
 
                         {loading && (
-                            <div className="flex items-center justify-center gap-2 antialiased text-zinc-300 text-sm">
+                            <div className="flex items-center justify-center gap-2 antialiased text-stone-500 text-sm">
                                 <Clock className="w-4 h-4" />
                                 <span>Estimated time: 15-30 seconds</span>
                             </div>
@@ -225,8 +225,8 @@ export function StockForm({ initialSymbol = "", onSymbolConsumed }: StockFormPro
                 </form>
 
                 <div className="mt-6 text-center">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/10 border border-green-500/20 text-green-400 rounded-full text-sm">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-full text-sm">
+                        <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
                         AI-powered analysis for Indian markets
                     </div>
                 </div>
@@ -239,16 +239,16 @@ export function StockForm({ initialSymbol = "", onSymbolConsumed }: StockFormPro
 
             {/* Error Message */}
             {error && (
-                <div className="bg-red-900/20 border border-red-800 rounded-2xl p-6">
+                <div className="bg-red-50 border border-red-200 rounded-2xl p-6">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-red-900/40 rounded-full">
-                            <AlertCircle className="w-5 h-5 text-red-400" />
+                        <div className="p-2 bg-red-100 rounded-full">
+                            <AlertCircle className="w-5 h-5 text-red-600" />
                         </div>
                         <div>
-                            <p className="text-red-300 font-semibold">
+                            <p className="text-red-800 font-semibold">
                                 Analysis Error
                             </p>
-                            <p className="text-red-400 text-sm">{error}</p>
+                            <p className="text-red-600 text-sm">{error}</p>
                         </div>
                     </div>
                 </div>

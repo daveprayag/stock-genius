@@ -104,72 +104,72 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
     const getTrendIcon = (trend?: string) => {
         switch (trend) {
             case "Upward":
-                return <TrendingUp className="w-4 h-4 text-green-500" />;
+                return <TrendingUp className="w-4 h-4 text-emerald-600" />;
             case "Downward":
-                return <TrendingDown className="w-4 h-4 text-red-500" />;
+                return <TrendingDown className="w-4 h-4 text-red-600" />;
             default:
-                return <Minus className="w-4 h-4 text-zinc-400" />;
+                return <Minus className="w-4 h-4 text-stone-400" />;
         }
     };
 
     const getTrendColor = (trend?: string) => {
         switch (trend) {
             case "Upward":
-                return "text-green-500 bg-green-500/10 border-green-500/20";
+                return "text-emerald-700 bg-emerald-50 border-emerald-200";
             case "Downward":
-                return "text-red-500 bg-red-500/10 border-red-500/20";
+                return "text-red-700 bg-red-50 border-red-200";
             default:
-                return "text-zinc-400 bg-zinc-500/10 border-zinc-500/20";
+                return "text-stone-600 bg-stone-50 border-stone-200";
         }
     };
 
     const getRecommendationColor = (recommendation?: string) => {
         switch (recommendation) {
             case "Buy":
-                return "text-green-500 bg-green-500/10 border-green-500/20";
+                return "text-emerald-700 bg-emerald-50 border-emerald-200";
             case "Sell":
-                return "text-red-500 bg-red-500/10 border-red-500/20";
+                return "text-red-700 bg-red-50 border-red-200";
             default:
-                return "text-blue-500 bg-blue-500/10 border-blue-500/20";
+                return "text-blue-700 bg-blue-50 border-blue-200";
         }
     };
 
     const getConfidenceColor = (confidence?: string) => {
         switch (confidence) {
             case "High":
-                return "text-green-500";
+                return "text-emerald-600";
             case "Medium":
-                return "text-blue-500";
+                return "text-blue-600";
             default:
-                return "text-red-500";
+                return "text-red-600";
         }
     };
 
     const getRiskColor = (risk?: string) => {
         switch (risk) {
             case "Low":
-                return "text-green-500 bg-green-500/10 border-green-500/20";
+                return "text-emerald-700 bg-emerald-50 border-emerald-200";
             case "Medium":
-                return "text-blue-500 bg-blue-500/10 border-blue-500/20";
+                return "text-blue-700 bg-blue-50 border-blue-200";
             default:
-                return "text-red-500 bg-red-500/10 border-red-500/20";
+                return "text-red-700 bg-red-50 border-red-200";
         }
     };
 
     const getAlignmentColor = (alignment?: string) => {
         switch (alignment) {
             case "Strongly Bullish":
-                return "text-green-400 bg-green-500/10 border-green-500/30";
+                return "text-emerald-700 bg-emerald-100 border-emerald-300";
             case "Bullish":
-                return "text-green-500 bg-green-500/10 border-green-500/20";
+                return "text-emerald-600 bg-emerald-50 border-emerald-200";
             case "Mixed":
-                return "text-yellow-400 bg-yellow-500/10 border-yellow-500/20";
+                return "text-amber-700 bg-amber-50 border-amber-200";
             case "Bearish":
-                return "text-red-500 bg-red-500/10 border-red-500/20";
+                return "text-red-600 bg-red-50 border-red-200";
             case "Strongly Bearish":
-                return "text-red-400 bg-red-500/10 border-red-500/30";
+                return "text-red-700 bg-red-100 border-red-300";
             default:
-                return "text-zinc-400 bg-zinc-500/10 border-zinc-500/20";
+                return "text-stone-600 bg-stone-50 border-stone-200";
         }
     };
 
@@ -177,22 +177,22 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
         <div className="space-y-6">
             {/* Stock Header Card */}
             {stockInfo && (
-                <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6">
+                <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
                     <div className="flex items-start justify-between mb-6">
                         <div>
                             <div className="flex items-center gap-3 mb-2">
-                                <h1 className="text-2xl font-bold text-zinc-100">
+                                <h1 className="text-2xl font-bold text-stone-800">
                                     {stockInfo.symbol}
                                 </h1>
-                                <span className="px-2 py-1 bg-blue-600 text-white text-xs rounded-md font-medium">
+                                <span className="px-2 py-1 bg-stone-800 text-white text-xs rounded-md font-medium">
                                     NSE
                                 </span>
                             </div>
-                            <p className="text-zinc-300 mb-1">
+                            <p className="text-stone-600 mb-1">
                                 {stockInfo.companyName}
                             </p>
                             {stockInfo.sector && (
-                                <p className="text-zinc-400 text-sm">
+                                <p className="text-stone-400 text-sm">
                                     Sector: {stockInfo.sector}
                                 </p>
                             )}
@@ -201,12 +201,12 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
-                            <p className="text-sm text-zinc-400 mb-1">
+                            <p className="text-sm text-stone-400 mb-1">
                                 Current Price
                             </p>
                             <div className="flex items-center gap-1">
-                                <IndianRupee className="w-5 h-5 text-zinc-100" />
-                                <span className="text-2xl font-bold text-zinc-100">
+                                <IndianRupee className="w-5 h-5 text-stone-800" />
+                                <span className="text-2xl font-bold text-stone-800">
                                     {stockInfo.currentPrice?.replace(
                                         /[₹$]/g,
                                         ""
@@ -215,10 +215,10 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                             </div>
                         </div>
                         <div>
-                            <p className="text-sm text-zinc-400 mb-1">
+                            <p className="text-sm text-stone-400 mb-1">
                                 52W High
                             </p>
-                            <p className="text-zinc-100 font-semibold">
+                            <p className="text-stone-700 font-semibold">
                                 ₹
                                 {stockInfo["52WeekHigh"]?.replace(
                                     /[₹$]/g,
@@ -227,10 +227,10 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                             </p>
                         </div>
                         <div>
-                            <p className="text-sm text-zinc-400 mb-1">
+                            <p className="text-sm text-stone-400 mb-1">
                                 52W Low
                             </p>
-                            <p className="text-zinc-100 font-semibold">
+                            <p className="text-stone-700 font-semibold">
                                 ₹
                                 {stockInfo["52WeekLow"]?.replace(/[₹$]/g, "") ||
                                     "N/A"}
@@ -243,17 +243,17 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
             {/* Trading Recommendation + Technical Analysis */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {tradingRecommendation && (
-                    <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6">
+                    <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
                         <div className="flex items-center gap-2 mb-6">
-                            <Target className="w-5 h-5 text-blue-500" />
-                            <h3 className="text-xl font-bold text-zinc-100">
+                            <Target className="w-5 h-5 text-blue-600" />
+                            <h3 className="text-xl font-bold text-stone-800">
                                 Trading Recommendation
                             </h3>
                         </div>
 
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
-                                <span className="text-zinc-300">
+                                <span className="text-stone-600">
                                     Recommendation:
                                 </span>
                                 <span
@@ -268,7 +268,7 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <span className="text-zinc-300">
+                                <span className="text-stone-600">
                                     Confidence:
                                 </span>
                                 <span
@@ -281,46 +281,46 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <span className="text-zinc-300">
+                                <span className="text-stone-600">
                                     Entry Point:
                                 </span>
-                                <span className="text-zinc-100 font-semibold">
+                                <span className="text-stone-800 font-semibold">
                                     {tradingRecommendation.entryPoint}
                                 </span>
                             </div>
 
                             {tradingRecommendation.idealEntryRange && (
                                 <div className="flex items-center justify-between">
-                                    <span className="text-zinc-300">
+                                    <span className="text-stone-600">
                                         Entry Range:
                                     </span>
-                                    <span className="text-blue-400 font-semibold">
+                                    <span className="text-blue-600 font-semibold">
                                         {tradingRecommendation.idealEntryRange}
                                     </span>
                                 </div>
                             )}
 
                             <div className="flex items-center justify-between">
-                                <span className="text-zinc-300">
+                                <span className="text-stone-600">
                                     Stop Loss:
                                 </span>
-                                <span className="text-red-400 font-semibold">
+                                <span className="text-red-600 font-semibold">
                                     {tradingRecommendation.stopLoss}
                                 </span>
                             </div>
                         </div>
 
                         {tradingRecommendation.targets && (
-                            <div className="mt-6 pt-6 border-t border-neutral-800">
-                                <h4 className="text-sm font-semibold text-zinc-200 mb-3">
+                            <div className="mt-6 pt-6 border-t border-stone-200">
+                                <h4 className="text-sm font-semibold text-stone-700 mb-3">
                                     Price Targets
                                 </h4>
                                 <div className="grid grid-cols-3 gap-4 text-center">
                                     <div>
-                                        <p className="text-xs text-zinc-400 mb-1">
+                                        <p className="text-xs text-stone-400 mb-1">
                                             Target 1
                                         </p>
-                                        <p className="text-green-400 font-semibold">
+                                        <p className="text-emerald-600 font-semibold">
                                             {
                                                 tradingRecommendation.targets
                                                     .target1
@@ -328,10 +328,10 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-xs text-zinc-400 mb-1">
+                                        <p className="text-xs text-stone-400 mb-1">
                                             Target 2
                                         </p>
-                                        <p className="text-green-400 font-semibold">
+                                        <p className="text-emerald-600 font-semibold">
                                             {
                                                 tradingRecommendation.targets
                                                     .target2
@@ -339,10 +339,10 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-xs text-zinc-400 mb-1">
+                                        <p className="text-xs text-stone-400 mb-1">
                                             Target 3
                                         </p>
-                                        <p className="text-green-400 font-semibold">
+                                        <p className="text-emerald-600 font-semibold">
                                             {
                                                 tradingRecommendation.targets
                                                     .target3
@@ -356,17 +356,17 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                 )}
 
                 {technicalAnalysis && (
-                    <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6">
+                    <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
                         <div className="flex items-center gap-2 mb-6">
-                            <BarChart3 className="w-5 h-5 text-blue-500" />
-                            <h3 className="text-xl font-bold text-zinc-100">
+                            <BarChart3 className="w-5 h-5 text-blue-600" />
+                            <h3 className="text-xl font-bold text-stone-800">
                                 Technical Analysis
                             </h3>
                         </div>
 
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
-                                <span className="text-zinc-300">Trend:</span>
+                                <span className="text-stone-600">Trend:</span>
                                 <div className="flex items-center gap-2">
                                     {getTrendIcon(technicalAnalysis.trend)}
                                     <span
@@ -380,28 +380,28 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <span className="text-zinc-300">
+                                <span className="text-stone-600">
                                     Trend Strength:
                                 </span>
-                                <span className="text-zinc-100 font-semibold">
+                                <span className="text-stone-800 font-semibold">
                                     {technicalAnalysis.trendStrength}
                                 </span>
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <span className="text-zinc-300">Breakout:</span>
+                                <span className="text-stone-600">Breakout:</span>
                                 <div className="flex items-center gap-1">
                                     {technicalAnalysis.breakout ? (
                                         <>
-                                            <CheckCircle className="w-4 h-4 text-green-500" />
-                                            <span className="text-green-500 font-semibold">
+                                            <CheckCircle className="w-4 h-4 text-emerald-600" />
+                                            <span className="text-emerald-600 font-semibold">
                                                 Yes
                                             </span>
                                         </>
                                     ) : (
                                         <>
-                                            <XCircle className="w-4 h-4 text-red-500" />
-                                            <span className="text-red-500 font-semibold">
+                                            <XCircle className="w-4 h-4 text-red-600" />
+                                            <span className="text-red-600 font-semibold">
                                                 No
                                             </span>
                                         </>
@@ -410,20 +410,20 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <span className="text-zinc-300">
+                                <span className="text-stone-600">
                                     Support Level:
                                 </span>
-                                <span className="text-green-400 font-semibold">
+                                <span className="text-emerald-600 font-semibold">
                                     {technicalAnalysis.supportLevel}
                                 </span>
                             </div>
 
                             {technicalAnalysis.resistanceLevel && (
                                 <div className="flex items-center justify-between">
-                                    <span className="text-zinc-300">
+                                    <span className="text-stone-600">
                                         Resistance Level:
                                     </span>
-                                    <span className="text-red-400 font-semibold">
+                                    <span className="text-red-600 font-semibold">
                                         {technicalAnalysis.resistanceLevel}
                                     </span>
                                 </div>
@@ -435,11 +435,11 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
 
             {/* Technical Signals Summary */}
             {technicalSignalsSummary && (
-                <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6">
+                <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-2">
-                            <BarChart3 className="w-5 h-5 text-blue-500" />
-                            <h3 className="text-xl font-bold text-zinc-100">
+                            <BarChart3 className="w-5 h-5 text-blue-600" />
+                            <h3 className="text-xl font-bold text-stone-800">
                                 Signal Alignment
                             </h3>
                         </div>
@@ -455,7 +455,7 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {technicalSignalsSummary.bullishSignals?.length > 0 && (
                             <div>
-                                <h4 className="text-sm font-semibold text-green-400 mb-3 flex items-center gap-1">
+                                <h4 className="text-sm font-semibold text-emerald-600 mb-3 flex items-center gap-1">
                                     <TrendingUp className="w-3.5 h-3.5" />
                                     Bullish Signals
                                 </h4>
@@ -466,8 +466,8 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                                                 key={i}
                                                 className="flex items-start gap-2"
                                             >
-                                                <div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-2 flex-shrink-0" />
-                                                <span className="text-zinc-300 text-sm">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 flex-shrink-0" />
+                                                <span className="text-stone-600 text-sm">
                                                     {signal}
                                                 </span>
                                             </div>
@@ -479,7 +479,7 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
 
                         {technicalSignalsSummary.bearishSignals?.length > 0 && (
                             <div>
-                                <h4 className="text-sm font-semibold text-red-400 mb-3 flex items-center gap-1">
+                                <h4 className="text-sm font-semibold text-red-600 mb-3 flex items-center gap-1">
                                     <TrendingDown className="w-3.5 h-3.5" />
                                     Bearish Signals
                                 </h4>
@@ -491,7 +491,7 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                                                 className="flex items-start gap-2"
                                             >
                                                 <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 flex-shrink-0" />
-                                                <span className="text-zinc-300 text-sm">
+                                                <span className="text-stone-600 text-sm">
                                                     {signal}
                                                 </span>
                                             </div>
@@ -506,10 +506,10 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
 
             {/* Predictions */}
             {predictions && (
-                <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6">
+                <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
                     <div className="flex items-center gap-2 mb-6">
-                        <Calendar className="w-5 h-5 text-blue-500" />
-                        <h3 className="text-xl font-bold text-zinc-100">
+                        <Calendar className="w-5 h-5 text-blue-600" />
+                        <h3 className="text-xl font-bold text-stone-800">
                             Price Predictions
                         </h3>
                     </div>
@@ -517,16 +517,16 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {predictions.upsidePotential && (
                             <div>
-                                <h4 className="text-lg font-semibold text-green-400 mb-4 flex items-center gap-2">
+                                <h4 className="text-lg font-semibold text-emerald-600 mb-4 flex items-center gap-2">
                                     <ArrowUpRight className="w-4 h-4" />
                                     Upside Potential
                                 </h4>
                                 <div className="space-y-3">
                                     <div className="flex justify-between">
-                                        <span className="text-zinc-300">
+                                        <span className="text-stone-600">
                                             1 month:
                                         </span>
-                                        <span className="text-green-400 font-medium">
+                                        <span className="text-emerald-600 font-medium">
                                             {
                                                 predictions.upsidePotential[
                                                     "1_month"
@@ -535,10 +535,10 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-zinc-300">
+                                        <span className="text-stone-600">
                                             3 months:
                                         </span>
-                                        <span className="text-green-400 font-medium">
+                                        <span className="text-emerald-600 font-medium">
                                             {
                                                 predictions.upsidePotential[
                                                     "3_months"
@@ -547,10 +547,10 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-zinc-300">
+                                        <span className="text-stone-600">
                                             6 months:
                                         </span>
-                                        <span className="text-green-400 font-medium">
+                                        <span className="text-emerald-600 font-medium">
                                             {
                                                 predictions.upsidePotential[
                                                     "6_months"
@@ -559,10 +559,10 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-zinc-300">
+                                        <span className="text-stone-600">
                                             12 months:
                                         </span>
-                                        <span className="text-green-400 font-medium">
+                                        <span className="text-emerald-600 font-medium">
                                             {
                                                 predictions.upsidePotential[
                                                     "12_months"
@@ -576,16 +576,16 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
 
                         {predictions.downsideRisk && (
                             <div>
-                                <h4 className="text-lg font-semibold text-red-400 mb-4 flex items-center gap-2">
+                                <h4 className="text-lg font-semibold text-red-600 mb-4 flex items-center gap-2">
                                     <ArrowDownRight className="w-4 h-4" />
                                     Downside Risk
                                 </h4>
                                 <div className="space-y-3">
                                     <div className="flex justify-between">
-                                        <span className="text-zinc-300">
+                                        <span className="text-stone-600">
                                             1 month:
                                         </span>
-                                        <span className="text-red-400 font-medium">
+                                        <span className="text-red-600 font-medium">
                                             {
                                                 predictions.downsideRisk[
                                                     "1_month"
@@ -594,10 +594,10 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-zinc-300">
+                                        <span className="text-stone-600">
                                             3 months:
                                         </span>
-                                        <span className="text-red-400 font-medium">
+                                        <span className="text-red-600 font-medium">
                                             {
                                                 predictions.downsideRisk[
                                                     "3_months"
@@ -606,10 +606,10 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-zinc-300">
+                                        <span className="text-stone-600">
                                             6 months:
                                         </span>
-                                        <span className="text-red-400 font-medium">
+                                        <span className="text-red-600 font-medium">
                                             {
                                                 predictions.downsideRisk[
                                                     "6_months"
@@ -623,33 +623,33 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                     </div>
 
                     {predictions.priceTargets && (
-                        <div className="mt-8 pt-6 border-t border-neutral-800">
-                            <h4 className="text-lg font-semibold text-zinc-200 mb-4 flex items-center gap-2">
+                        <div className="mt-8 pt-6 border-t border-stone-200">
+                            <h4 className="text-lg font-semibold text-stone-700 mb-4 flex items-center gap-2">
                                 <DollarSign className="w-4 h-4" />
                                 Price Targets
                             </h4>
                             <div className="grid grid-cols-3 gap-4 text-center">
                                 <div>
-                                    <p className="text-sm text-zinc-400 mb-2">
+                                    <p className="text-sm text-stone-400 mb-2">
                                         Conservative
                                     </p>
-                                    <p className="text-blue-400 font-semibold">
+                                    <p className="text-blue-600 font-semibold">
                                         {predictions.priceTargets.conservative}
                                     </p>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-zinc-400 mb-2">
+                                    <p className="text-sm text-stone-400 mb-2">
                                         Moderate
                                     </p>
-                                    <p className="text-blue-400 font-semibold">
+                                    <p className="text-blue-600 font-semibold">
                                         {predictions.priceTargets.moderate}
                                     </p>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-zinc-400 mb-2">
+                                    <p className="text-sm text-stone-400 mb-2">
                                         Aggressive
                                     </p>
-                                    <p className="text-blue-400 font-semibold">
+                                    <p className="text-blue-600 font-semibold">
                                         {predictions.priceTargets.aggressive}
                                     </p>
                                 </div>
@@ -661,10 +661,10 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
 
             {/* Risk Assessment */}
             {riskAssessment && (
-                <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6">
+                <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
                     <div className="flex items-center gap-2 mb-6">
-                        <Shield className="w-5 h-5 text-blue-500" />
-                        <h3 className="text-xl font-bold text-zinc-100">
+                        <Shield className="w-5 h-5 text-blue-600" />
+                        <h3 className="text-xl font-bold text-stone-800">
                             Risk Assessment
                         </h3>
                     </div>
@@ -672,7 +672,7 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
-                                <span className="text-zinc-300">
+                                <span className="text-stone-600">
                                     Risk Level:
                                 </span>
                                 <span
@@ -685,19 +685,19 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <span className="text-zinc-300">
+                                <span className="text-stone-600">
                                     Volatility:
                                 </span>
-                                <span className="text-zinc-100 font-semibold">
+                                <span className="text-stone-800 font-semibold">
                                     {riskAssessment.volatility}
                                 </span>
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <span className="text-zinc-300">
+                                <span className="text-stone-600">
                                     Position Sizing:
                                 </span>
-                                <span className="text-zinc-100 font-semibold">
+                                <span className="text-stone-800 font-semibold">
                                     {riskAssessment.positionSizing}
                                 </span>
                             </div>
@@ -706,7 +706,7 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                         {riskAssessment.keyRiskFactors &&
                             riskAssessment.keyRiskFactors.length > 0 && (
                                 <div>
-                                    <h4 className="text-sm font-semibold text-zinc-200 mb-3">
+                                    <h4 className="text-sm font-semibold text-stone-700 mb-3">
                                         Key Risk Factors
                                     </h4>
                                     <div className="space-y-2">
@@ -717,7 +717,7 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
                                                     className="flex items-start gap-2"
                                                 >
                                                     <AlertTriangle className="w-3 h-3 text-red-500 mt-0.5 flex-shrink-0" />
-                                                    <span className="text-zinc-300 text-sm">
+                                                    <span className="text-stone-600 text-sm">
                                                         {factor}
                                                     </span>
                                                 </div>
@@ -732,14 +732,14 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
 
             {/* AI Reasoning */}
             {reasoning && (
-                <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6">
+                <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
                     <div className="flex items-center gap-2 mb-4">
-                        <Brain className="w-5 h-5 text-blue-500" />
-                        <h3 className="text-xl font-bold text-zinc-100">
+                        <Brain className="w-5 h-5 text-blue-600" />
+                        <h3 className="text-xl font-bold text-stone-800">
                             AI Reasoning
                         </h3>
                     </div>
-                    <p className="text-zinc-200 leading-relaxed whitespace-pre-wrap">
+                    <p className="text-stone-600 leading-relaxed whitespace-pre-wrap">
                         {reasoning}
                     </p>
                 </div>
@@ -747,7 +747,7 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
 
             {/* Footer */}
             {analysis.tokensUsed !== undefined && (
-                <div className="text-center py-4 text-zinc-400 text-sm">
+                <div className="text-center py-4 text-stone-400 text-sm">
                     Analysis powered by Advanced AI • Tokens used:{" "}
                     {analysis.tokensUsed} • Always conduct your own research
                     before investing

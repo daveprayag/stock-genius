@@ -5,13 +5,10 @@ import axios from "axios";
 import {
     Gem,
     RefreshCw,
-    TrendingUp,
-    TrendingDown,
     ChevronUp,
     ChevronDown,
     AlertCircle,
     ExternalLink,
-    BarChart2,
 } from "lucide-react";
 import type { ValueStock } from "@/app/api/value/route";
 
@@ -24,40 +21,6 @@ type SortKey = keyof Pick<
     ValueStock,
     "valueScore" | "pe" | "priceToBook" | "roe" | "debtToEquity" | "analystUpside" | "fcfYield" | "dividendYield" | "operatingMargin"
 >;
-
-// ─── FilterPills ──────────────────────────────────────────────────────────────
-function FilterPills<T extends string>({
-    label,
-    options,
-    value,
-    onChange,
-    activeClass = "bg-blue-500/20 border-blue-500/50 text-blue-300",
-}: {
-    label: string;
-    options: { label: string; value: T }[];
-    value: T;
-    onChange: (v: T) => void;
-    activeClass?: string;
-}) {
-    return (
-        <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs text-zinc-500 font-medium whitespace-nowrap">{label}:</span>
-            {options.map((o) => (
-                <button
-                    key={o.value}
-                    onClick={() => onChange(o.value)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
-                        value === o.value
-                            ? activeClass
-                            : "bg-neutral-800 border-neutral-700 text-zinc-400 hover:text-zinc-200 hover:border-neutral-500"
-                    }`}
-                >
-                    {o.label}
-                </button>
-            ))}
-        </div>
-    );
-}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function fmt(n: number | null, decimals = 1): string {
@@ -72,9 +35,9 @@ function fmtPct(n: number | null): string {
 
 
 function scoreBg(label: ValueStock["valueLabel"]): string {
-    if (label === "Deep Value") return "bg-emerald-500/15 border-emerald-500/40 text-emerald-400";
-    if (label === "Value") return "bg-blue-500/15 border-blue-500/40 text-blue-400";
-    return "bg-zinc-800 border-zinc-700 text-zinc-400";
+    if (label === "Deep Value") return "bg-emerald-100 border-emerald-300 text-emerald-700";
+    if (label === "Value") return "bg-blue-100 border-blue-300 text-blue-700";
+    return "bg-stone-100 border-stone-300 text-stone-600";
 }
 
 function SortTh({
@@ -96,15 +59,11 @@ function SortTh({
     return (
         <th
             onClick={() => onSort(sortKey)}
-            className={`px-3 py-3 text-right text-xs font-medium text-zinc-400 whitespace-nowrap select-none cursor-pointer hover:text-zinc-200 transition-colors ${className}`}
+            className={`px-2 sm:px-3 py-2.5 text-right text-[10px] sm:text-xs font-medium text-stone-500 whitespace-nowrap select-none cursor-pointer hover:text-stone-800 transition-colors ${className}`}
         >
-            <span className="inline-flex items-center gap-1 justify-end">
+            <span className="inline-flex items-center gap-0.5 justify-end">
                 {label}
-                {active ? (
-                    asc ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
-                ) : (
-                    <ChevronDown className="w-3 h-3 opacity-30" />
-                )}
+                {active && (asc ? <ChevronUp className="w-2.5 h-2.5 text-emerald-600" /> : <ChevronDown className="w-2.5 h-2.5 text-emerald-600" />)}
             </span>
         </th>
     );
@@ -119,7 +78,6 @@ export function ValueScreener({ onAnalyze }: ValueScreenerProps) {
     const [stocks, setStocks] = useState<ValueStock[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
     // Filters
     const [peFilter, setPeFilter] = useState<PeFilter>("any");
@@ -137,7 +95,6 @@ export function ValueScreener({ onAnalyze }: ValueScreenerProps) {
         try {
             const res = await axios.get("/api/value");
             setStocks(res.data.stocks ?? []);
-            setLastUpdated(new Date());
         } catch (e: any) {
             setError(e.response?.data?.error ?? "Failed to load value data.");
         } finally {
@@ -197,245 +154,211 @@ export function ValueScreener({ onAnalyze }: ValueScreenerProps) {
 
     return (
         <div className="space-y-6">
-            {/* Stats bar */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {[
-                    { label: "Screened", value: stocks.length, color: "text-zinc-100" },
-                    { label: "Deep Value", value: deepValueCount, color: "text-emerald-400" },
-                    { label: "Value", value: valueCount, color: "text-blue-400" },
-                    { label: "Filtered", value: displayed.length, color: "text-zinc-100" },
-                ].map((s) => (
-                    <div key={s.label} className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 text-center">
-                        <div className={`text-2xl font-bold ${s.color}`}>{loading ? "—" : s.value}</div>
-                        <div className="text-xs text-zinc-500 mt-1">{s.label}</div>
-                    </div>
-                ))}
+            {/* Stats bar - compact */}
+            <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm">
+                <span className="text-stone-500">
+                    Top <span className="font-semibold text-stone-800">{loading ? "—" : displayed.length}</span> value stocks
+                </span>
+                <span className="text-stone-300">•</span>
+                <span className="text-emerald-600 font-medium">{loading ? "—" : deepValueCount} Deep Value</span>
+                <span className="text-stone-300">•</span>
+                <span className="text-blue-600 font-medium">{loading ? "—" : valueCount} Value</span>
             </div>
 
-            {/* Filters */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 space-y-3">
-                <FilterPills<PeFilter>
-                    label="P/E"
-                    value={peFilter}
-                    onChange={setPeFilter}
-                    activeClass="bg-emerald-500/15 border-emerald-500/40 text-emerald-300"
-                    options={[
-                        { label: "Any", value: "any" },
-                        { label: "< 10", value: "lt10" },
-                        { label: "< 15", value: "lt15" },
-                        { label: "< 20", value: "lt20" },
-                        { label: "< 30", value: "lt30" },
-                    ]}
-                />
-                <FilterPills<RoeFilter>
-                    label="ROE"
-                    value={roeFilter}
-                    onChange={setRoeFilter}
-                    activeClass="bg-blue-500/15 border-blue-500/40 text-blue-300"
-                    options={[
-                        { label: "Any", value: "any" },
-                        { label: "> 10%", value: "gt10" },
-                        { label: "> 15%", value: "gt15" },
-                        { label: "> 20%", value: "gt20" },
-                    ]}
-                />
-                <FilterPills<DebtFilter>
-                    label="Debt/Equity"
-                    value={debtFilter}
-                    onChange={setDebtFilter}
-                    activeClass="bg-amber-500/15 border-amber-500/40 text-amber-300"
-                    options={[
-                        { label: "Any", value: "any" },
-                        { label: "Low (< 1×)", value: "low" },
-                        { label: "Very Low (< 0.5×)", value: "vlow" },
-                    ]}
-                />
-                <FilterPills<CategoryFilter>
-                    label="Category"
-                    value={catFilter}
-                    onChange={setCatFilter}
-                    activeClass="bg-violet-500/15 border-violet-500/40 text-violet-300"
-                    options={[
-                        { label: "All", value: "all" },
-                        { label: "Deep Value", value: "Deep Value" },
-                        { label: "Value", value: "Value" },
-                    ]}
-                />
+            {/* Filters - compact inline */}
+            <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[10px] text-stone-400">P/E:</span>
+                {[
+                    { label: "Any", value: "any" as PeFilter },
+                    { label: "<15", value: "lt15" as PeFilter },
+                    { label: "<20", value: "lt20" as PeFilter },
+                ].map((opt) => (
+                    <button
+                        key={opt.value}
+                        onClick={() => setPeFilter(opt.value)}
+                        className={`px-2 py-1 rounded text-[10px] sm:text-xs font-medium transition-all cursor-pointer ${
+                            peFilter === opt.value
+                                ? "bg-emerald-100 text-emerald-700"
+                                : "bg-white border border-stone-200 text-stone-500 hover:text-stone-700"
+                        }`}
+                    >
+                        {opt.label}
+                    </button>
+                ))}
+                <span className="text-stone-300 text-[10px]">|</span>
+                <span className="text-[10px] text-stone-400">ROE:</span>
+                {[
+                    { label: "Any", value: "any" as RoeFilter },
+                    { label: ">15%", value: "gt15" as RoeFilter },
+                    { label: ">20%", value: "gt20" as RoeFilter },
+                ].map((opt) => (
+                    <button
+                        key={opt.value}
+                        onClick={() => setRoeFilter(opt.value)}
+                        className={`px-2 py-1 rounded text-[10px] sm:text-xs font-medium transition-all cursor-pointer ${
+                            roeFilter === opt.value
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-white border border-stone-200 text-stone-500 hover:text-stone-700"
+                        }`}
+                    >
+                        {opt.label}
+                    </button>
+                ))}
+                <span className="text-stone-300 text-[10px]">|</span>
+                {[
+                    { label: "All", value: "all" as CategoryFilter },
+                    { label: "Deep Value", value: "Deep Value" as CategoryFilter },
+                    { label: "Value", value: "Value" as CategoryFilter },
+                ].map((opt) => (
+                    <button
+                        key={opt.value}
+                        onClick={() => setCatFilter(opt.value)}
+                        className={`px-2 py-1 rounded text-[10px] sm:text-xs font-medium transition-all cursor-pointer ${
+                            catFilter === opt.value
+                                ? "bg-violet-100 text-violet-700"
+                                : "bg-white border border-stone-200 text-stone-500 hover:text-stone-700"
+                        }`}
+                    >
+                        {opt.label}
+                    </button>
+                ))}
             </div>
 
             {/* Error */}
             {error && (
-                <div className="bg-red-900/20 border border-red-800 rounded-xl p-4 flex items-center gap-3">
-                    <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
-                    <p className="text-red-300 text-sm">{error}</p>
-                    <button onClick={fetchData} className="ml-auto text-xs text-red-400 hover:text-red-200 underline cursor-pointer">
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
+                    <AlertCircle className="w-5 h-5 text-red-500 shrink-0" />
+                    <p className="text-red-700 text-sm">{error}</p>
+                    <button onClick={fetchData} className="ml-auto text-xs text-red-600 hover:text-red-800 underline cursor-pointer">
                         Retry
                     </button>
                 </div>
             )}
 
-            {/* Table */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden">
-                {/* Table header row */}
-                <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-800">
-                    <div className="flex items-center gap-2">
-                        <BarChart2 className="w-4 h-4 text-emerald-400" />
-                        <span className="text-sm font-medium text-zinc-200">
-                            {displayed.length} stocks
-                        </span>
-                        {lastUpdated && !loading && (
-                            <span className="text-xs text-zinc-500">
-                                · updated {lastUpdated.toLocaleTimeString()}
-                            </span>
-                        )}
+            {/* Loading skeleton */}
+            {loading && (
+                <div className="bg-white border border-stone-200 rounded-2xl overflow-hidden shadow-sm">
+                    <div className="px-6 py-5 border-b border-stone-200">
+                        <div className="flex items-center gap-3 animate-pulse">
+                            <div className="w-5 h-5 rounded-full bg-stone-200" />
+                            <div className="w-48 h-4 rounded bg-stone-200" />
+                        </div>
                     </div>
-                    <button
-                        onClick={fetchData}
-                        disabled={loading}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-800 border border-neutral-700 text-zinc-300 text-xs rounded-lg hover:bg-neutral-700 transition-colors disabled:opacity-50 cursor-pointer"
-                    >
-                        <RefreshCw className={`w-3 h-3 ${loading ? "animate-spin" : ""}`} />
-                        {loading ? "Loading..." : "Refresh"}
-                    </button>
+                    <div className="divide-y divide-stone-100">
+                        {Array.from({ length: 8 }).map((_, i) => (
+                            <div key={i} className="px-6 py-4 flex items-center gap-4 animate-pulse">
+                                <div className="w-5 h-4 rounded bg-stone-100" />
+                                <div className="w-28 h-4 rounded bg-stone-100" />
+                                <div className="flex-1 h-4 rounded bg-stone-100" />
+                                <div className="w-16 h-4 rounded bg-stone-100" />
+                                <div className="w-14 h-4 rounded bg-stone-100" />
+                                <div className="w-12 h-4 rounded bg-stone-100" />
+                            </div>
+                        ))}
+                    </div>
+                    <div className="px-6 py-4 border-t border-stone-200">
+                        <p className="text-sm text-stone-400 text-center">
+                            Scanning fundamentals across 330+ NSE stocks… ~10 seconds
+                        </p>
+                    </div>
                 </div>
+            )}
 
-                {loading ? (
+            {/* Table */}
+            {!loading && (
+            <div className="bg-white border border-stone-200 rounded-xl overflow-hidden shadow-sm">
+                {displayed.length === 0 ? (
                     <div className="py-16 text-center">
-                        <RefreshCw className="w-6 h-6 text-zinc-500 animate-spin mx-auto mb-3" />
-                        <p className="text-zinc-400 text-sm">Scanning fundamentals across 75 NSE stocks…</p>
-                        <p className="text-zinc-600 text-xs mt-1">This may take 30–60 seconds</p>
-                    </div>
-                ) : displayed.length === 0 ? (
-                    <div className="py-16 text-center">
-                        <Gem className="w-8 h-8 text-zinc-600 mx-auto mb-3" />
-                        <p className="text-zinc-400 text-sm">No stocks match the current filters.</p>
+                        <Gem className="w-8 h-8 text-stone-300 mx-auto mb-3" />
+                        <p className="text-stone-500 text-sm">No stocks match the current filters.</p>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
+                        <table className="w-full text-xs sm:text-sm">
                             <thead>
-                                <tr className="border-b border-neutral-800">
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-zinc-400 w-8">#</th>
-                                    <th className="px-3 py-3 text-left text-xs font-medium text-zinc-400">Stock</th>
+                                <tr className="bg-stone-50 border-b border-stone-200">
+                                    <th className="sticky left-0 z-10 bg-stone-50 px-2 sm:px-3 py-2.5 text-left text-[10px] sm:text-xs font-medium text-stone-500 min-w-[100px] sm:min-w-[130px]">Stock</th>
                                     <SortTh label="P/E" sortKey="pe" current={sortKey} asc={sortAsc} onSort={handleSort} />
-                                    <SortTh label="P/B" sortKey="priceToBook" current={sortKey} asc={sortAsc} onSort={handleSort} className="hidden sm:table-cell" />
+                                    <SortTh label="P/B" sortKey="priceToBook" current={sortKey} asc={sortAsc} onSort={handleSort} />
                                     <SortTh label="ROE" sortKey="roe" current={sortKey} asc={sortAsc} onSort={handleSort} />
-                                    <SortTh label="D/E" sortKey="debtToEquity" current={sortKey} asc={sortAsc} onSort={handleSort} className="hidden md:table-cell" />
-                                    <SortTh label="Op.Margin" sortKey="operatingMargin" current={sortKey} asc={sortAsc} onSort={handleSort} className="hidden lg:table-cell" />
-                                    <SortTh label="FCF Yield" sortKey="fcfYield" current={sortKey} asc={sortAsc} onSort={handleSort} className="hidden lg:table-cell" />
-                                    <SortTh label="Analyst ↑" sortKey="analystUpside" current={sortKey} asc={sortAsc} onSort={handleSort} className="hidden md:table-cell" />
+                                    <SortTh label="D/E" sortKey="debtToEquity" current={sortKey} asc={sortAsc} onSort={handleSort} />
+                                    <SortTh label="Upside" sortKey="analystUpside" current={sortKey} asc={sortAsc} onSort={handleSort} />
                                     <SortTh label="Score" sortKey="valueScore" current={sortKey} asc={sortAsc} onSort={handleSort} />
-                                    <th className="px-3 py-3 text-center text-xs font-medium text-zinc-400">AI</th>
+                                    <th className="px-2 sm:px-3 py-2.5 text-center text-[10px] sm:text-xs font-medium text-stone-500">AI</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-neutral-800/50">
-                                {displayed.map((s, idx) => (
+                            <tbody className="divide-y divide-stone-100">
+                                {displayed.map((s) => (
                                     <tr
                                         key={s.symbol}
-                                        className="hover:bg-neutral-800/40 transition-colors"
+                                        className="hover:bg-stone-50 transition-colors"
                                     >
-                                        {/* # */}
-                                        <td className="px-4 py-3 text-xs text-zinc-500 tabular-nums">{idx + 1}</td>
-
                                         {/* Stock */}
-                                        <td className="px-3 py-3 min-w-[140px]">
-                                            <div className="flex items-start gap-2">
-                                                <div>
-                                                    <div className="flex items-center gap-1.5">
-                                                        <span className="font-semibold text-zinc-100 text-sm">{s.symbol}</span>
-                                                        <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium border ${scoreBg(s.valueLabel)}`}>
-                                                            {s.valueLabel}
-                                                        </span>
-                                                    </div>
-                                                    <div className="text-[11px] text-zinc-500 truncate max-w-[130px]">{s.name}</div>
-                                                    <div className="text-[10px] text-zinc-600">{s.sector}</div>
-                                                    <div className="flex items-center gap-1.5 mt-0.5">
-                                                        <span className="text-xs font-medium text-zinc-300">₹{s.price.toLocaleString()}</span>
-                                                        <span className={`text-[10px] font-medium flex items-center gap-0.5 ${s.changePercent >= 0 ? "text-emerald-400" : "text-red-400"}`}>
-                                                            {s.changePercent >= 0
-                                                                ? <TrendingUp className="w-3 h-3" />
-                                                                : <TrendingDown className="w-3 h-3" />}
-                                                            {fmtPct(s.changePercent)}
-                                                        </span>
-                                                    </div>
+                                        <td className="sticky left-0 z-10 bg-white px-2 sm:px-3 py-2.5">
+                                            <div className="flex flex-col">
+                                                <div className="flex items-center gap-1">
+                                                    <span className="font-semibold text-stone-800 text-xs sm:text-sm">{s.symbol}</span>
+                                                    <span className={`text-[8px] px-1 py-0.5 rounded font-medium ${
+                                                        s.valueLabel === "Deep Value" ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-blue-700"
+                                                    }`}>
+                                                        {s.valueLabel === "Deep Value" ? "DV" : "V"}
+                                                    </span>
                                                 </div>
+                                                <span className="text-[10px] text-stone-400 truncate max-w-[90px] sm:max-w-[120px]">{s.name}</span>
+                                                <span className="text-[10px] text-stone-600 mt-0.5">₹{s.price.toLocaleString()}</span>
                                             </div>
                                         </td>
 
                                         {/* P/E */}
-                                        <td className="px-3 py-3 text-right tabular-nums">
-                                            <span className={`text-sm font-medium ${s.pe != null && s.pe < 15 ? "text-emerald-400" : s.pe != null && s.pe < 25 ? "text-zinc-200" : "text-zinc-400"}`}>
+                                        <td className="px-2 sm:px-3 py-2.5 text-right">
+                                            <span className={`font-mono text-[11px] sm:text-sm ${s.pe != null && s.pe < 15 ? "text-emerald-600" : "text-stone-600"}`}>
                                                 {fmt(s.pe)}
                                             </span>
                                         </td>
 
                                         {/* P/B */}
-                                        <td className="px-3 py-3 text-right tabular-nums hidden sm:table-cell">
-                                            <span className={`text-sm ${s.priceToBook != null && s.priceToBook < 2 ? "text-emerald-400" : "text-zinc-300"}`}>
+                                        <td className="px-2 sm:px-3 py-2.5 text-right">
+                                            <span className={`font-mono text-[11px] sm:text-sm ${s.priceToBook != null && s.priceToBook < 2 ? "text-emerald-600" : "text-stone-600"}`}>
                                                 {fmt(s.priceToBook)}
                                             </span>
                                         </td>
 
                                         {/* ROE */}
-                                        <td className="px-3 py-3 text-right tabular-nums">
-                                            <span className={`text-sm font-medium ${s.roe != null && s.roe * 100 >= 20 ? "text-emerald-400" : s.roe != null && s.roe * 100 >= 12 ? "text-blue-400" : "text-zinc-400"}`}>
-                                                {s.roe != null ? `${(s.roe * 100).toFixed(1)}%` : "—"}
+                                        <td className="px-2 sm:px-3 py-2.5 text-right">
+                                            <span className={`font-mono text-[11px] sm:text-sm ${s.roe != null && s.roe * 100 >= 20 ? "text-emerald-600" : "text-stone-600"}`}>
+                                                {s.roe != null ? `${(s.roe * 100).toFixed(0)}%` : "—"}
                                             </span>
                                         </td>
 
                                         {/* D/E */}
-                                        <td className="px-3 py-3 text-right tabular-nums hidden md:table-cell">
-                                            <span className={`text-sm ${s.debtToEquity != null && s.debtToEquity < 0.5 ? "text-emerald-400" : s.debtToEquity != null && s.debtToEquity < 1 ? "text-zinc-300" : "text-amber-400"}`}>
-                                                {fmt(s.debtToEquity, 2)}
-                                            </span>
-                                        </td>
-
-                                        {/* Op. Margin */}
-                                        <td className="px-3 py-3 text-right tabular-nums hidden lg:table-cell">
-                                            <span className="text-sm text-zinc-300">
-                                                {s.operatingMargin != null ? `${(s.operatingMargin * 100).toFixed(1)}%` : "—"}
-                                            </span>
-                                        </td>
-
-                                        {/* FCF Yield */}
-                                        <td className="px-3 py-3 text-right tabular-nums hidden lg:table-cell">
-                                            <span className={`text-sm ${s.fcfYield != null && s.fcfYield * 100 >= 3 ? "text-emerald-400" : "text-zinc-300"}`}>
-                                                {s.fcfYield != null ? `${(s.fcfYield * 100).toFixed(1)}%` : "—"}
+                                        <td className="px-2 sm:px-3 py-2.5 text-right">
+                                            <span className={`font-mono text-[11px] sm:text-sm ${s.debtToEquity != null && s.debtToEquity < 0.5 ? "text-emerald-600" : "text-stone-600"}`}>
+                                                {fmt(s.debtToEquity, 1)}
                                             </span>
                                         </td>
 
                                         {/* Analyst Upside */}
-                                        <td className="px-3 py-3 text-right tabular-nums hidden md:table-cell">
-                                            {s.analystUpside != null ? (
-                                                <div>
-                                                    <span className={`text-sm font-medium ${s.analystUpside >= 20 ? "text-emerald-400" : s.analystUpside >= 0 ? "text-zinc-300" : "text-red-400"}`}>
-                                                        {fmtPct(s.analystUpside)}
-                                                    </span>
-                                                    {s.numberOfAnalysts != null && (
-                                                        <div className="text-[10px] text-zinc-600">{s.numberOfAnalysts} analysts</div>
-                                                    )}
-                                                </div>
-                                            ) : (
-                                                <span className="text-zinc-500">—</span>
-                                            )}
+                                        <td className="px-2 sm:px-3 py-2.5 text-right">
+                                            <span className={`font-mono text-[11px] sm:text-sm ${s.analystUpside != null && s.analystUpside >= 20 ? "text-emerald-600" : "text-stone-600"}`}>
+                                                {s.analystUpside != null ? fmtPct(s.analystUpside) : "—"}
+                                            </span>
                                         </td>
 
                                         {/* Score */}
-                                        <td className="px-3 py-3 text-right">
-                                            <span className={`inline-flex items-center justify-center w-10 h-10 rounded-full text-sm font-bold border ${scoreBg(s.valueLabel)}`}>
+                                        <td className="px-2 sm:px-3 py-2.5 text-right">
+                                            <span className={`inline-flex items-center justify-center px-1.5 sm:px-2 py-0.5 rounded border text-[10px] sm:text-xs font-bold ${scoreBg(s.valueLabel)}`}>
                                                 {s.valueScore}
                                             </span>
                                         </td>
 
                                         {/* AI Button */}
-                                        <td className="px-3 py-3 text-center">
+                                        <td className="px-2 sm:px-3 py-2.5 text-center">
                                             <button
                                                 onClick={() => onAnalyze(s.symbol)}
-                                                className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-neutral-800 hover:bg-zinc-700 border border-neutral-700 text-zinc-300 text-xs rounded-lg transition-colors cursor-pointer"
+                                                className="p-1.5 bg-stone-100 hover:bg-emerald-600 border border-stone-200 hover:border-emerald-500 text-stone-500 hover:text-white rounded transition-all cursor-pointer"
                                                 title="Analyze with AI"
                                             >
                                                 <ExternalLink className="w-3 h-3" />
-                                                <span className="hidden sm:inline">AI</span>
                                             </button>
                                         </td>
                                     </tr>
@@ -445,22 +368,8 @@ export function ValueScreener({ onAnalyze }: ValueScreenerProps) {
                     </div>
                 )}
             </div>
+            )}
 
-            {/* Legend */}
-            <div className="flex flex-wrap gap-4 text-xs text-zinc-500">
-                <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                    Deep Value: score ≥ 60 — deeply undervalued with strong fundamentals
-                </div>
-                <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-                    Value: score 40–59 — reasonably priced quality business
-                </div>
-                <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-zinc-500" />
-                    Fair Value: score 20–39 — fairly priced
-                </div>
-            </div>
         </div>
     );
 }

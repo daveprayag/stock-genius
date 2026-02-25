@@ -4,7 +4,7 @@ import { useState } from "react";
 import { StockForm } from "@/components/StockForm";
 import { MomentumScreener } from "@/components/MomentumScreener";
 import { ValueScreener } from "@/components/ValueScreener";
-import { TrendingUp, Brain, Zap, Shield, Gem } from "lucide-react";
+import { TrendingUp, Brain, Zap, Gem } from "lucide-react";
 
 type Tab = "analyzer" | "momentum" | "value";
 
@@ -23,29 +23,28 @@ export default function Home() {
     };
 
     return (
-        <div className="min-h-screen bg-neutral-950 relative overflow-hidden">
+        <div className="min-h-screen bg-[#edeceb] relative overflow-hidden flex flex-col">
             {/* Background */}
-            <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/3 via-transparent to-green-500/2" />
+            <div className="absolute inset-0 bg-grid-pattern opacity-[0.03]" />
 
             {/* Fixed Header */}
-            <header className="fixed top-0 left-0 right-0 z-50 border-b border-neutral-800 bg-neutral-950/95 backdrop-blur-xl">
+            <header className="fixed top-0 left-0 right-0 z-50 border-b border-stone-300/50 bg-[#edeceb]/95 backdrop-blur-xl">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
                     {/* Logo */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
                         <div className="relative">
-                            <div className="w-10 h-10 bg-zinc-100 rounded-xl flex items-center justify-center shadow-lg">
-                                <TrendingUp className="w-5 h-5 text-zinc-900" />
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-stone-800 rounded-lg sm:rounded-xl flex items-center justify-center shadow-md">
+                                <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                             </div>
-                            <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full" />
+                            <div className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-2 h-2 sm:w-3 sm:h-3 bg-emerald-500 rounded-full" />
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold text-zinc-100">StockGenius</h1>
-                            <div className="flex items-center gap-2 mt-0.5">
-                                <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full font-medium">
+                            <h1 className="text-lg sm:text-xl font-bold text-stone-800">StockGenius</h1>
+                            <div className="hidden sm:flex items-center gap-2 mt-0.5">
+                                <span className="text-xs bg-stone-800 text-white px-2 py-0.5 rounded-full font-medium">
                                     AI Powered
                                 </span>
-                                <span className="text-xs text-zinc-400 font-medium">
+                                <span className="text-xs text-stone-500 font-medium">
                                     🇮🇳 Indian Markets
                                 </span>
                             </div>
@@ -53,13 +52,13 @@ export default function Home() {
                     </div>
 
                     {/* Tab navigation */}
-                    <div className="flex items-center bg-neutral-900 border border-neutral-800 rounded-xl p-1 gap-1">
+                    <div className="flex items-center bg-white/60 border border-stone-300/50 rounded-xl p-1 gap-1 shadow-sm">
                         <button
                             onClick={() => setActiveTab("analyzer")}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
                                 activeTab === "analyzer"
-                                    ? "bg-zinc-100 text-zinc-900 shadow-sm"
-                                    : "text-zinc-400 hover:text-zinc-200"
+                                    ? "bg-stone-800 text-white shadow-sm"
+                                    : "text-stone-500 hover:text-stone-700"
                             }`}
                         >
                             <Brain className="w-4 h-4" />
@@ -69,8 +68,8 @@ export default function Home() {
                             onClick={() => setActiveTab("momentum")}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
                                 activeTab === "momentum"
-                                    ? "bg-zinc-100 text-zinc-900 shadow-sm"
-                                    : "text-zinc-400 hover:text-zinc-200"
+                                    ? "bg-stone-800 text-white shadow-sm"
+                                    : "text-stone-500 hover:text-stone-700"
                             }`}
                         >
                             <Zap className="w-4 h-4" />
@@ -80,8 +79,8 @@ export default function Home() {
                             onClick={() => setActiveTab("value")}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
                                 activeTab === "value"
-                                    ? "bg-zinc-100 text-zinc-900 shadow-sm"
-                                    : "text-zinc-400 hover:text-zinc-200"
+                                    ? "bg-stone-800 text-white shadow-sm"
+                                    : "text-stone-500 hover:text-stone-700"
                             }`}
                         >
                             <Gem className="w-4 h-4" />
@@ -89,80 +88,69 @@ export default function Home() {
                         </button>
                     </div>
 
-                    {/* Live indicator */}
-                    <div className="hidden md:flex items-center gap-2 text-zinc-400">
-                        <span className="text-sm font-medium">Live Analysis</span>
-                        <div className="w-2 h-2 bg-green-500 rounded-full" />
-                    </div>
                 </div>
             </header>
 
             {/* Main */}
-            <main className="pt-20 flex-1 relative z-10">
-                <div className="max-w-7xl mx-auto px-6 py-12">
+            <main className="pt-16 sm:pt-20 flex-1 relative z-10">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-12">
                     {activeTab === "value" ? (
                         <div>
-                            <div className="mb-8 text-center">
-                                <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-                                    <span className="text-zinc-100">Value </span>
-                                    <span className="text-emerald-400">Screener</span>
-                                </h1>
-                                <p className="text-zinc-300 text-lg max-w-2xl mx-auto">
-                                    NSE stocks ranked by a composite value score — low valuation,
-                                    strong fundamentals, and analyst upside.
-                                </p>
-                                <div className="flex flex-wrap justify-center gap-3 mt-6">
-                                    {[
-                                        "Low P/E & P/B",
-                                        "High ROE",
-                                        "Low Debt",
-                                        "FCF Positive",
-                                        "Analyst Upside",
-                                    ].map((tag) => (
-                                        <span
-                                            key={tag}
-                                            className="px-3 py-1.5 bg-neutral-800 border border-neutral-700 text-zinc-300 rounded-full text-sm"
-                                        >
-                                            {tag}
-                                        </span>
-                                    ))}
+                            {/* Value tab header - minimal */}
+                            <div className="mb-4 sm:mb-8">
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                    <div>
+                                        <h1 className="text-2xl sm:text-4xl font-bold">
+                                            <span className="text-stone-800">Value </span>
+                                            <span className="text-emerald-600">Screener</span>
+                                        </h1>
+                                        <p className="text-stone-500 text-sm mt-1 hidden sm:block">
+                                            Low valuation • Strong fundamentals • Analyst upside
+                                        </p>
+                                    </div>
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {["Low P/E", "High ROE", "Low Debt", "FCF+"].map((tag) => (
+                                            <span
+                                                key={tag}
+                                                className="px-2 py-1 bg-white/60 border border-stone-300/50 text-stone-500 rounded text-[10px] font-medium"
+                                            >
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                             <ValueScreener onAnalyze={handleAnalyzeFromScreener} />
                         </div>
                     ) : activeTab === "analyzer" ? (
                         <div>
-                            {/* Hero */}
-                            <div className="text-center mb-16">
-                                <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-                                    <span className="text-zinc-100">AI Stock </span>
-                                    <span className="text-blue-400">Analyzer</span>
-                                </h1>
-                                <p className="text-xl text-zinc-300 mb-12 max-w-4xl mx-auto leading-relaxed">
-                                    Professional-grade AI analysis for Indian stock markets.
-                                    Get detailed insights, trend analysis, and trading
-                                    recommendations.
-                                </p>
-
-                                <div className="flex flex-wrap justify-center gap-4 mb-12">
-                                    {[
-                                        { icon: Brain, text: "AI-Powered Analysis" },
-                                        { icon: Zap, text: "Real-time Insights" },
-                                        { icon: Shield, text: "Risk Assessment" },
-                                    ].map((feature) => (
-                                        <div
-                                            key={feature.text}
-                                            className="flex items-center gap-2 px-4 py-2 bg-neutral-800 border border-neutral-700 text-zinc-200 rounded-full text-sm font-medium"
-                                        >
-                                            <feature.icon className="w-4 h-4" />
-                                            {feature.text}
-                                        </div>
-                                    ))}
+                            {/* Analyzer header - minimal */}
+                            <div className="mb-4 sm:mb-8">
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                    <div>
+                                        <h1 className="text-2xl sm:text-4xl font-bold">
+                                            <span className="text-stone-800">AI </span>
+                                            <span className="text-blue-600">Analyzer</span>
+                                        </h1>
+                                        <p className="text-stone-500 text-sm mt-1 hidden sm:block">
+                                            AI-powered insights • Trend analysis • Risk assessment
+                                        </p>
+                                    </div>
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {["AI Analysis", "Trends", "Risk"].map((tag) => (
+                                            <span
+                                                key={tag}
+                                                className="px-2 py-1 bg-white/60 border border-stone-300/50 text-stone-500 rounded text-[10px] font-medium"
+                                            >
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
 
                             {/* Stock Form */}
-                            <div id="stock-form" className="mb-16">
+                            <div id="stock-form">
                                 <StockForm
                                     initialSymbol={prefilledSymbol}
                                     onSymbolConsumed={() => setPrefilledSymbol("")}
@@ -171,30 +159,27 @@ export default function Home() {
                         </div>
                     ) : (
                         <div>
-                            {/* Momentum tab header */}
-                            <div className="mb-8 text-center">
-                                <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-                                    <span className="text-zinc-100">Momentum </span>
-                                    <span className="text-yellow-400">Screener</span>
-                                </h1>
-                                <p className="text-zinc-300 text-lg max-w-2xl mx-auto">
-                                    NSE stocks filtered by strict momentum criteria and ranked
-                                    by composite score — built for 3–6 month swing trades.
-                                </p>
-                                <div className="flex flex-wrap justify-center gap-3 mt-6">
-                                    {[
-                                        "Price > EMA 50",
-                                        "3M Return > 10%",
-                                        "Within 10% of 1M High",
-                                        "Volume Confirmation",
-                                    ].map((tag) => (
-                                        <span
-                                            key={tag}
-                                            className="px-3 py-1.5 bg-neutral-800 border border-neutral-700 text-zinc-300 rounded-full text-sm"
-                                        >
-                                            {tag}
-                                        </span>
-                                    ))}
+                            {/* Momentum tab header - minimal */}
+                            <div className="mb-4 sm:mb-8">
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                    <div>
+                                        <h1 className="text-2xl sm:text-4xl font-bold">
+                                            <span className="text-stone-800">Momentum </span>
+                                            <span className="text-amber-600">Screener</span>
+                                        </h1>
+                                        <p className="text-stone-500 text-sm mt-1 hidden sm:block">
+                                            3–6 month swing trades • Price &gt; EMA50 • 3M &gt; 10% • Near highs
+                                        </p>
+                                    </div>
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {["EMA50↑", "3M&gt;10%", "Near High", "Vol✓"].map((tag) => (
+                                            <span
+                                                key={tag}
+                                                className="px-2 py-1 bg-white/60 border border-stone-300/50 text-stone-500 rounded text-[10px] font-medium"
+                                                dangerouslySetInnerHTML={{ __html: tag }}
+                                            />
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
 
@@ -204,28 +189,12 @@ export default function Home() {
                 </div>
             </main>
 
-            {/* Footer */}
-            <footer className="border-t border-neutral-800 bg-neutral-950 py-8 relative z-10">
+            {/* Footer - minimal */}
+            <footer className="border-t border-stone-300/50 bg-[#edeceb] py-4 relative z-10">
                 <div className="max-w-7xl mx-auto px-6">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                        <p className="text-zinc-300 text-sm">
-                            &copy; {new Date().getFullYear()} StockGenius. Professional stock
-                            analysis platform.
-                        </p>
-                        <div className="flex items-center gap-4 text-xs text-zinc-400">
-                            <span>Advanced AI</span>
-                            <span>•</span>
-                            <span>Real-time Data</span>
-                            <span>•</span>
-                            <span>Professional Analysis</span>
-                        </div>
-                    </div>
-                    <div className="mt-4 pt-4 border-t border-neutral-800">
-                        <p className="text-xs text-zinc-400 text-center">
-                            <strong>Disclaimer:</strong> Educational insights only — not
-                            investment advice. Quotes may be delayed 5–10 minutes. Always
-                            consult a qualified financial advisor before investing.
-                        </p>
+                    <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-stone-500">
+                        <span>&copy; {new Date().getFullYear()} StockGenius</span>
+                        <span className="text-stone-400">Not investment advice. Consult a financial advisor.</span>
                     </div>
                 </div>
             </footer>

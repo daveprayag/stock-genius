@@ -44,6 +44,7 @@ interface BreakoutStock {
     name: string;
     price: number;
     changePercent: number;
+    oneWeekReturn: number;
     oneMonthReturn: number;
     threeMonthReturn: number;
     pctBelow52WkHigh: number;
@@ -145,6 +146,7 @@ export async function GET(request: Request) {
         interface ComputedCandidate {
             q: any;
             closes: number[];
+            oneWeekReturn: number;
             oneMonthReturn: number;
             threeMonthReturn: number;
             pctBelowOneMonthHigh: number;
@@ -176,6 +178,10 @@ export async function GET(request: Request) {
 
             const price: number = q.regularMarketPrice;
             const threeMonthReturn = ((closes[closes.length - 1] - closes[0]) / closes[0]) * 100;
+            // 1W return: last ~5 trading days
+            const oneWeekReturn = closes.length >= 6
+                ? ((closes[closes.length - 1] - closes[closes.length - 6]) / closes[closes.length - 6]) * 100
+                : threeMonthReturn / 12;
             // 1M return: last ~21 trading days
             const oneMonthReturn = closes.length >= 22
                 ? ((closes[closes.length - 1] - closes[closes.length - 22]) / closes[closes.length - 22]) * 100
@@ -200,7 +206,7 @@ export async function GET(request: Request) {
             const rsi14 = computeRSI(closes);
 
             allComputed.push({
-                q, closes, oneMonthReturn, threeMonthReturn,
+                q, closes, oneWeekReturn, oneMonthReturn, threeMonthReturn,
                 pctBelowOneMonthHigh, oneMonthHigh, pctBelow52WkHigh,
                 ema50Pct, ema200Pct, volRatio, rsi14,
             });
@@ -274,7 +280,7 @@ export async function GET(request: Request) {
                 return count >= 2;
             })
             .map(c => {
-                const { q, oneMonthReturn, threeMonthReturn, pctBelow52WkHigh,
+                const { q, oneWeekReturn, oneMonthReturn, threeMonthReturn, pctBelow52WkHigh,
                     ema50Pct, ema200Pct, volRatio, rsi14 } = c;
                 const price: number = q.regularMarketPrice;
                 const changePercent: number = q.regularMarketChangePercent ?? 0;
@@ -300,6 +306,7 @@ export async function GET(request: Request) {
                     name: (q.shortName || q.longName || q.symbol) as string,
                     price,
                     changePercent: parseFloat(changePercent.toFixed(2)),
+                    oneWeekReturn: parseFloat(oneWeekReturn.toFixed(2)),
                     oneMonthReturn: parseFloat(oneMonthReturn.toFixed(2)),
                     threeMonthReturn: parseFloat(threeMonthReturn.toFixed(2)),
                     pctBelow52WkHigh: q.fiftyTwoWeekHigh != null
