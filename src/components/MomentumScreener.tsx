@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import { cachedGet, bustCache } from "@/lib/clientCache";
 import {
     RefreshCw,
     Search,
@@ -83,8 +83,6 @@ type BreakoutSortKey =
 // Breakout filter types
 type VolFilter    = "all" | "1.5" | "2" | "3";
 type ReturnFilter = "all" | "5"   | "8" | "15";
-type HighFilter   = "all" | "10"  | "5" | "2";
-type RsiFilter    = "all" | "50-65" | "65-78";
 
 // Momentum filter types
 type ThreeMonthFilter = "all" | "15" | "25";
@@ -149,10 +147,12 @@ export function MomentumScreener({ onAnalyze }: Props) {
         setLoading(true);
         setError(null);
         try {
-            const res = await axios.get(`/api/momentum${force ? "?refresh=true" : ""}`);
-            setStocks(res.data.stocks ?? []);
-            setBreakouts(res.data.breakouts ?? []);
-            setLastUpdated(res.data.lastUpdated ?? null);
+            const url = `/api/momentum${force ? "?refresh=true" : ""}`;
+            if (force) bustCache("/api/momentum");
+            const data = await cachedGet<{ stocks: StockMomentum[]; breakouts: BreakoutStock[]; lastUpdated: string | null }>(url, 15 * 60 * 1000);
+            setStocks(data.stocks ?? []);
+            setBreakouts(data.breakouts ?? []);
+            setLastUpdated(data.lastUpdated ?? null);
         } catch {
             setError("Failed to load data. Check your connection and try again.");
         } finally {

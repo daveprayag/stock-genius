@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import { cachedGet } from "@/lib/clientCache";
 import {
     Gem,
-    RefreshCw,
     ChevronUp,
     ChevronDown,
     AlertCircle,
@@ -82,7 +81,7 @@ export function ValueScreener({ onAnalyze }: ValueScreenerProps) {
     // Filters
     const [peFilter, setPeFilter] = useState<PeFilter>("any");
     const [roeFilter, setRoeFilter] = useState<RoeFilter>("any");
-    const [debtFilter, setDebtFilter] = useState<DebtFilter>("any");
+    const [debtFilter] = useState<DebtFilter>("any");
     const [catFilter, setCatFilter] = useState<CategoryFilter>("all");
 
     // Sort
@@ -93,10 +92,10 @@ export function ValueScreener({ onAnalyze }: ValueScreenerProps) {
         setLoading(true);
         setError(null);
         try {
-            const res = await axios.get("/api/value");
-            setStocks(res.data.stocks ?? []);
-        } catch (e: any) {
-            setError(e.response?.data?.error ?? "Failed to load value data.");
+            const data = await cachedGet<{ stocks: ValueStock[] }>("/api/value", 30 * 60 * 1000);
+            setStocks(data.stocks ?? []);
+        } catch {
+            setError("Failed to load value data.");
         } finally {
             setLoading(false);
         }
